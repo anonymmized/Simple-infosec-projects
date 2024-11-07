@@ -1,17 +1,15 @@
 import psutil
 
 def get_listening_ports():
-    s = ""
+    listening_ports = []
     for cn in psutil.net_connections():
         if cn.status == psutil.CONN_LISTEN:
-            s += "Port:"
-            s += str(cn.laddr.port)
-            s += " PID:"
-            p = psutil.Process(cn.pid)
-            s += str(p.pid)
-            s += " Process Name: "
-            s += p.name()
-            s += "\n"
-    return s
+            listening_ports.append(cn.laddr.port)
+    return listening_ports
 
-print(get_listening_ports())
+ports = get_listening_ports()
+for port in ports:
+    for con in psutil.net_connections():
+        if con.status == psutil.CONN_LISTEN:
+            p = psutil.Process(con.pid)
+    print(f"Port: {port}  PID: {p.pid}  Process Name: {p.name()}")
